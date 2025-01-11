@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webhook-test-deployment
+  labels:
+    app: webhook-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webhook-test
+  template:
+    metadata:
+      labels:
+        app: webhook-test
+    spec:
+      containers:
+        - name: app
+          image: soli0222/webhook-test:{{ .Values.image.tag }}
+          ports:
+            - containerPort: 8080
+          env:
+            - name: GO_ENV
+              value: production
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webhook-test-service
+spec:
+  selector:
+    app: webhook-test
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
