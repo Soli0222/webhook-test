@@ -7,6 +7,8 @@ import (
 	"net/http"
 )
 
+var version = "1.0.0"
+
 func webhookHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
@@ -46,8 +48,16 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+func healthzHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Webhook Test Server is healthy\nVersion: " + version))
+}
+
 func main() {
 	http.HandleFunc("/", webhookHandler)
+	http.HandleFunc("/healthz", healthzHandler)
+
+	log.Printf("Starting server version %s...", version)
 	log.Println("Server is listening on port 8080...")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal("ListenAndServe:", err)
