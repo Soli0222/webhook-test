@@ -7,7 +7,6 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  REGISTRY_IMAGE: ${{ github.repository }}
   TAGS: |
     type=edge
     type=ref,event=pr
@@ -32,6 +31,7 @@ jobs:
         run: |
           platform=${{ matrix.platform }}
           echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
+          echo "REGISTRY_IMAGE=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
 
       - name: Check out the repo
         uses: actions/checkout@v6.0.0
@@ -85,6 +85,9 @@ jobs:
     needs:
       - build
     steps:
+      - name: Prepare
+        run: echo "REGISTRY_IMAGE=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+
       - name: Download digests
         uses: actions/download-artifact@v6.0.0
         with:
