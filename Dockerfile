@@ -1,4 +1,6 @@
-FROM golang:1.23-alpine
+FROM --platform=$BUILDPLATFORM golang:1.23-alpine AS builder
+
+ARG TARGETARCH
 
 WORKDIR /app
 
@@ -7,7 +9,13 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o main .
+RUN CGO_ENABLED=0 GOARCH=$TARGETARCH go build -o main .
+
+FROM alpine:latest
+
+WORKDIR /app
+
+COPY --from=builder /app/main .
 
 EXPOSE 8080
 
