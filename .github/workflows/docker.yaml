@@ -14,7 +14,7 @@ env:
 jobs:
   # see https://docs.docker.com/build/ci/github-actions/multi-platform/#distribute-build-across-multiple-runners
   build:
-    name: Build
+    name: Build (${{ matrix.platform }})
     runs-on: ${{ matrix.runner }}
     permissions:
       contents: read
