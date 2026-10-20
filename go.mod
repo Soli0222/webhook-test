@@ -1,3 +1,3 @@
 module github.com/Soli0222/webhook-test
 
-go 1.27.2
+go 1.27.3
